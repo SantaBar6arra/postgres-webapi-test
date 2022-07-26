@@ -27,10 +27,10 @@ namespace Data.Repositories
                 string query = @"insert into weapons(name, commonrange, maxrange, caliber, manufacturer, class) 
                     values (@Name, @CommonRange, @MaxRange, @Caliber, @Manufacturer, @Class) returning id";
 
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+                using (NpgsqlConnection connection = new(connectionString))
                 {
                     connection.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                    using (NpgsqlCommand command = new(query, connection))
                     {
                         command.Parameters.AddWithValue("@Name", entity.Name);
                         command.Parameters.AddWithValue("@CommonRange", entity.CommonRange);
@@ -66,13 +66,13 @@ namespace Data.Repositories
             
                     from weapons";
 
-                DataTable dataTable = new DataTable();
+                DataTable dataTable = new();
 
                 NpgsqlDataReader reader;
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+                using (NpgsqlConnection connection = new(connectionString))
                 {
                     connection.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                    using (NpgsqlCommand command = new(query, connection))
                     {
                         reader = command.ExecuteReader();
                         dataTable.Load(reader);
@@ -83,7 +83,8 @@ namespace Data.Repositories
                 }
 
                 var dataRows = dataTable.AsEnumerable();
-                var weapons = new List<Weapon>();
+                List<Weapon> weapons = new();
+
                 foreach (DataRow row in dataRows)
                 {
                     Weapon weapon = new()
@@ -125,10 +126,10 @@ namespace Data.Repositories
                 DataTable dataTable = new();
                 NpgsqlDataReader reader;
 
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+                using (NpgsqlConnection connection = new(connectionString))
                 {
                     connection.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                    using (NpgsqlCommand command = new(query, connection))
                     {
                         command.Parameters.AddWithValue("@Id", id);
                         reader = command.ExecuteReader();
@@ -141,7 +142,7 @@ namespace Data.Repositories
 
                 if (dataTable.Rows.Count != 0)
                 {
-                    Weapon weapon = new()
+                    return new Weapon()
                     {
                         Id = dataTable.Rows[0].Field<long>(0),
                         Name = dataTable.Rows[0].Field<string>(1),
@@ -151,7 +152,6 @@ namespace Data.Repositories
                         Manufacturer = dataTable.Rows[0].Field<string>(5),
                         Class = dataTable.Rows[0].Field<string>(6)
                     };
-                    return weapon;
                 }
                 else
                     throw new RecordNotFoundException();
@@ -168,13 +168,13 @@ namespace Data.Repositories
             {
                 string query = @"select id from weapons where id = @id";
 
-                DataTable dataTable = new DataTable();
+                DataTable dataTable = new();
                 NpgsqlDataReader reader;
 
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+                using (NpgsqlConnection connection = new(connectionString))
                 {
                     connection.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                    using (NpgsqlCommand command = new(query, connection))
                     {
                         command.Parameters.AddWithValue("@Id", entity.Id);
                         reader = command.ExecuteReader();
@@ -200,10 +200,10 @@ namespace Data.Repositories
                         class = @Class
                     where id = @Id;";
 
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+                using (NpgsqlConnection connection = new(connectionString))
                 {
                     connection.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                    using (NpgsqlCommand command = new(query, connection))
                     {
                         command.Parameters.AddWithValue("@Id", entity.Id);
                         command.Parameters.AddWithValue("@Name", entity.Name);
@@ -232,13 +232,13 @@ namespace Data.Repositories
             {
                 string query = @"select id from weapons where id = @id";
 
-                DataTable dataTable = new DataTable();
+                DataTable dataTable = new();
                 NpgsqlDataReader reader;
 
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+                using (NpgsqlConnection connection = new(connectionString))
                 {
                     connection.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                    using (NpgsqlCommand command = new(query, connection))
                     {
                         command.Parameters.AddWithValue("@Id", id);
                         reader = command.ExecuteReader();
@@ -256,10 +256,10 @@ namespace Data.Repositories
 
                 query = @"delete from weapons where id = @id;";
 
-                using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+                using (NpgsqlConnection connection = new(connectionString))
                 {
                     connection.Open();
-                    using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                    using (NpgsqlCommand command = new(query, connection))
                     {
                         command.Parameters.AddWithValue("@Id", id);
                         reader = command.ExecuteReader();
